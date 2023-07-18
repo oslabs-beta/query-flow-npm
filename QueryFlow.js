@@ -1,15 +1,17 @@
+//Include crypt-js as a dependency in package.json so that it is installed when a new user downloads the npm package and npm installs
+import CryptoJS from "crypto-js";
 
 const QueryFlow = {};
-//Include crypt-js as a dependency in package.json so that it is installed when a new user downloads the npm package and npm installs
 
 
 QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL) => {
 
   //  1. Check querystring is 'Read' Type. If not, throw new error. 
-  const stringCheck = async (querystring) => {
+  const stringCheck = async () => {
     if(!querystring.toLowerCase().startsWith('SELECT')){ 
       console.error('Query string must be of read type only. I.E. SELECT');
-      const result = await db.query(querystring);
+      const string = {text: querystring, values: values};
+      const result = await db(string);
       return result;
     }
   };
@@ -21,15 +23,13 @@ QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL
  
   //2. Creating a unique string for hashing, creating a unique key for redis storage
   let keyConcat = '';
-  for (const arg of string.values){
-    keyConcat += arg.toString();
+  for (let i = 0; i < values.length; i++){
+    keyConcat += values[i].toString()
   } 
-  keyConcat = keyConcat + string.text;
+  keyConcat = keyConcat + querystring
 
   //3. Create the hash key for the data to be stored. 
   const hash = CryptoJS.MD5(keyConcat).toString();
-  console.log(hash);
-
 
   //Attempt to retrieve data from User's redis instance.
   const getResultRedis = await redisModel.json.get(hash, {
@@ -49,7 +49,7 @@ QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL
 
     if (totalTimeSQL > threshold){
       try {
-        console.log(`We set Redis with ${hash} and the string`);
+        console.log(`We set Redis with key ${hash} and your data`);
         await redisModel.json.set(hash, '.', resultSQL);
         await redisModel.expire(hash, TTL);
       } catch (err) {
