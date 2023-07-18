@@ -1,0 +1,23 @@
+{
+  "name": "@query-flow/query-flow",
+  "author": "Ryan Campbell, Philip Brown, Vivek Patel, George Greer, Niko Amescua",
+  "version": "0.0.0",
+  "description": "Library for automatically caching slow SQL queries within the middleware of a developer's codebase.",
+  "main": "QueryFlow.js",
+  "dependencies": {
+    "crypto-js": "^4.1.1"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oslabs-beta/query-flow-npm.git"
+  },
+  "keywords": [
+    "QueryFlow", "query-flow-npm", "query-flow", "queryflow", "SQL", "Redis", "cache", "memory"
+  ],
+  "license": "ISC",
+  "homepage": "https://www.query-flow.com"
+}
