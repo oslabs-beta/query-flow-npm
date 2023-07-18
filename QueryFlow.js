@@ -67,4 +67,4 @@ QueryFlow.explain = () => {
   );
 };
 
-module.exports = QueryFlow;
+export default QueryFlow;
