@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="www.query-flow.com">
-    <img src="./assets/QueryFlow-icon.png" alt="Logo" width="80" height="80">
+    <img src="./assets/QueryFlow-logo-white.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">query-flow</h3>
@@ -78,7 +78,7 @@ For more information about setting up a Redis database, visit: [https://redis.io
 To get started:
 
 ```sh
-npm install query-flow
+npm install queryflow.js
 ```
 
 <!-- USAGE EXAMPLES -->
@@ -92,7 +92,7 @@ In the code below, the primary relational database model, Redis model and npm pa
 ```javascript
 import db from "../models/ourDBModel.mjs";
 import redisModel from "../models/redisModel.mjs";
-import QueryFlow from "query-flow";
+import QueryFlow from "queryflow.js";
 
 const exampleController = {};
 
