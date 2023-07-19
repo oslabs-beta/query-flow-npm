@@ -1,4 +1,4 @@
-# query-flow
+# queryflow.js
 
 <!-- PROJECT LOGO -->
 <br />
@@ -7,7 +7,7 @@
     <img src="./assets/QueryFlow-logo-white.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">query-flow</h3>
+<h3 align="center">queryflow.js</h3>
 
   <p align="center">
     Lightweight middleware function that automatically caches results of slow SQL queries.
@@ -59,7 +59,7 @@
 
 </br>
 
-Before the development of this NPM package to automatically cache query results from a relational database, a web application, _[www.query-flow.com](www.query-flow.com)_, was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the query-flow NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
+Before the development of this NPM package to automatically cache query results from a relational database, a web application, _[www.query-flow.com](www.query-flow.com)_, was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
