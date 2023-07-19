@@ -1,14 +1,12 @@
-//Include crypt-js as a dependency in package.json so that it is installed when a new user downloads the npm package and npm installs
 import CryptoJS from "crypto-js";
 
 const QueryFlow = {};
 
-
 QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL) => {
 
-  //  1. Check querystring is 'Read' Type. If not, throw new error. 
+  //Check querystring is 'Read' Type. If not, throw new error. 
   const stringCheck = async () => {
-    if(!querystring.toLowerCase().startsWith('SELECT')){ 
+    if(!querystring.toLowerCase().startsWith('select')){ 
       console.error('Query string must be of read type only. I.E. SELECT');
       const string = {text: querystring, values: values};
       const result = await db(string);
@@ -17,18 +15,17 @@ QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL
   };
   stringCheck(querystring);
 
-  //Handling multiple values passed into string.
   //querystring is passed in as a string. Values for the queryString are passed in as an array. These parameters are stored in the string object, which is later passed into the db model
   const string = {text: querystring, values: values};
  
-  //2. Creating a unique string for hashing, creating a unique key for redis storage
+  //Creating a unique string for hashing, creating a unique key for redis storage
   let keyConcat = '';
   for (let i = 0; i < values.length; i++){
     keyConcat += values[i].toString()
   } 
   keyConcat = keyConcat + querystring
 
-  //3. Create the hash key for the data to be stored. 
+  //Create the hash key for the data to be stored. 
   const hash = CryptoJS.MD5(keyConcat).toString();
 
   //Attempt to retrieve data from User's redis instance.
@@ -36,20 +33,20 @@ QueryFlow.autoCache = async (redisModel, db, querystring, values, threshold, TTL
     path: '.',
   });
     
-  //Return the data to the client CACHE HIT
+  //CACHE HIT
   if (getResultRedis){
+    console.log(`Returned data associated with key ${hash} from Redis`)
     return getResultRedis;
-
-    //CACHE MISS
+    
+  //CACHE MISS
   } else {
     const startTime = process.hrtime();
     const resultSQL = await db(string);
     const endTime = process.hrtime(startTime);
     const totalTimeSQL = (endTime[0] * 1000 + endTime[1] / 1000000).toFixed(2);
-
     if (totalTimeSQL > threshold){
       try {
-        console.log(`We set Redis with key ${hash} and your data`);
+        console.log(`Set Redis with key ${hash} and data`);
         await redisModel.json.set(hash, '.', resultSQL);
         await redisModel.expire(hash, TTL);
       } catch (err) {
