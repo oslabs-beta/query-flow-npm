@@ -10,20 +10,20 @@
 <h3 align="center">query-flow</h3>
 
   <p align="center">
-    Lightweight middleware that automatically caches results of slow SQL queries.
+    Lightweight middleware function that automatically caches results of slow SQL queries.
+    <br />
     <br />
     <!--Do we need explore the docs? The README is basically the documentation.-->
-    <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
+    <a href="https://www.query-flow.com"><strong>Analyze & Visualize »</strong></a>
     <br />
     <br />
-    <!--We can add a gif or video of a demo in the README -->
-    <a href="https://github.com/github_username/repo_name">View Demo</a>
-    ·
     <a href="https://github.com/oslabs-beta/query-flow-npm/issues">Report Bug</a>
     ·
     <a href="https://github.com/oslabs-beta/query-flow-npm/issues">Request Feature</a>
   </p>
 </div>
+
+</br>
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -40,11 +40,10 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
+    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -52,15 +51,15 @@
 
 ## About The Project
 
+<div align="center">
   <a href="www.query-flow.com">
     <img src="./assets/QueryFlowTagLogo.png" alt="Logo" width="" height="55">
   </a>
+</div>
 
-Before the development of an NPM package to automatically cache slow queries to relational databases, a web application was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-based thresholds with the query-flow npm package, such that queries slower than the set threshold will be stored in a cache database. This increases the performance of queries by reducing queries times up to 94%.
+</br>
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
-
-_For more examples, please refer to [www.query-flow.com](www.query-flow.com)_
+Before the development of this NPM package to automatically cache query results from a relational database, a web application, _[www.query-flow.com](www.query-flow.com)_, was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the query-flow NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -70,50 +69,87 @@ _For more examples, please refer to [www.query-flow.com](www.query-flow.com)_
 
 ### Prerequisites
 
-This package assumes that a Redis instance has already been set up alongside a primary relational database.
+This package assumes that a Redis instance has been set up alongside a primary relational database.
+
+For more information about setting up a Redis database, visit: [https://redis.io/docs/getting-started/](https://redis.io/docs/getting-started/)
 
 ### Installation
 
 To get started:
 
 ```sh
-npm install @query-flow/query-flow
+npm install query-flow
 ```
 
 <!-- USAGE EXAMPLES -->
 
 ## Usage
 
+### Example Implementation in Backend
+
+In the code below, the primary relational database model, Redis model and npm package are imported into a backend controller. Here, the developer defines the SQL query string, an array of values which will be bound to the query string, the threshold time in seconds for caching the results from the primary database, and the TTL of the data stored in the cache database. The autoCache method is invoked asynchronously within the controller function. The results can be assigned, and pass on through the response cycle.
+
+```javascript
+import db from "../models/ourDBModel.mjs";
+import redisModel from "../models/redisModel.mjs";
+import QueryFlow from "query-flow";
+
+const exampleController = {};
+
+exampleController.example = async (req, res, next) => {
+  const querystring =
+    "SELECT * FROM users WHERE firstname = $1 AND lastname = $2";
+  const { firstname, lastname } = req.body;
+  const values = [firstname, lastname];
+  const threshold = 3000; //Milliseconds
+  const TTL = 30; //Seconds
+  try {
+    const result = await QueryFlow.autoCache(
+      redisModel,
+      db,
+      querystring,
+      values,
+      threshold,
+      TTL
+    );
+    res.locals.data = result.rows;
+    return next();
+  } catch (error) {
+    return next({
+      log: "Error handler caught error in middleware",
+      status: 500,
+      message: "Error handler caught error in middleware",
+    });
+  }
+};
+
+export default exampleController;
+```
+
+## Parameters
+
+- []() **redisModel:** Redis client to be set as 'redisModel' or imported as 'redisModel'.
+- []() **db:** Database client to be set as 'db' or imported as 'db'.
+- []() **querystring:** SQL query string.
+- []() **values:** Array of values to bound to SQL query string
+- []() **threshold:** Threshold in milliseconds (ms)
+- []() **TTL:** Time to Live (TTL) in seconds (s)
+
+We recommend using the _volatile-ttl_ eviction policy with this package to take advantage of the data's TTL, in the even that maximum memory is reached.
+
 ### Example Use Cases
 
 **Session Storage**
 
-With an automatic cache backend architecture, a session store could be used to cache user session data. This improves the speed and efficiency of accessing session data, since the data is kept in a fast-access cache instead of slower primary storage, like a relational database. The cache can store frequently accessed session data, which reduces the load on the database and improves response times for the user.
+With an automatic cache backend architecture, a session store could be used to cache user session data, thereby improving the speed and efficiency of accessing session data since data is kept in a fast-access cache instead of slower primary storage, such as a relational database. The cache can store frequently accessed session data, which reduces the load on the primary database and improves response times for the user.
 
 **Machine Learning**
 
-Machine learning models can often be quite large and take time to load. If an application needs to make frequent predictions in real time, it may be too slow to load the model from disk each time a prediction is needed. Redis can be used to cache the models in memory for fast access. This significantly reduces the prediction latency and improves the overall speed of the ML application.
+Machine learning models can often be quite large and take time to load from a primary database. If an application needs to make frequent predictions in real time, it may be too slow to load the model from disk each time a prediction is needed. This NPM package can be used to cache critical components of the model in memory for fast access, significantly reducing the prediction latency and increasing the overall speed of the application.
 
 **Frequently Fetched Data or Costly Queries**
 
-Storing fetch requests result sets in memory decreases the processing time for web applications that need to return data from complex queries. Furthermore, data that is frequently used need not be retrieved from a slow primary relational database, it can be kept in memory for quick retrieval as it is often requested by the client.
-
-  <a>
-    <img src="./assets/exampleController.exampleFunction.png" alt="Logo" width="850" height="500">
-  </a>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Parameters
-
-- [ ] redisModel: Redis client to be set as 'redisModel' or imported as 'redisModel'.
-- [ ] db: Database client to be set as 'db' or imported as 'db'.
-- [ ] querystring: User to pass in variable with the value of the relevant query string.
-- [ ] values: User to pass in an array of values to be used to query the primary database
-- [ ] threshold: User to set threshold in milliseconds
-- [ ] TTL: User to set TTL in SECONDS
-
-We recommend using the volatile-ttl eviction policy with this package, however, this is a recommendation only.
+Storing fetch requests' result sets in memory decreases the processing time for web applications that need to return data from complex queries. Furthermore, data that is frequently used need not be retrieved from a slow primary relational database, it can be kept in memory for quick retrieval as it is often requested by the client.
 
 See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
 
@@ -136,33 +172,37 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- CONTACT -->
+
+## Contact
+
+QueryFlow - [@Query_Flow](https://twitter.com/Query_Flow) - queryflow58@gmail.com
+
+Query Performance Visualizer and Analyzer: [https://www.query-flow.com/](https://www.query-flow.com/)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Team
+
+<!-- Include github and linkedin handles and links here? -->
+
+- []() **Vivek Patel** - [GitHub](https://github.com/vkpatel007) - [LinkedIn](https://www.linkedin.com/in/vivekpatel607/)
+- []() **Niko Amescua** - [GitHub](https://github.com/NikoAmescua) - [LinkedIn](https://www.linkedin.com/in/nikoamescua/)
+- []() **Ryan Campbell** - [GitHub](https://github.com/cronullarc) - [LinkedIn](https://www.linkedin.com/in/ryancampbelladr/)
+- []() **Philip Brown** - [GitHub](https://github.com/starfishpanda) - [LinkedIn](https://www.linkedin.com/in/philiplbrown/)
+- []() **George Greer** - [GitHub](https://github.com/ggreer91) - [LinkedIn](https://www.linkedin.com/in/george-greer/)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Acknowledgements
+
+The Team wholeheartedly thanks Chris Suzukida for his mentorship and support throughout the development of this project.
+
 <!-- LICENSE -->
 
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
-
-## Contact
-
-QueryFlow - [@twitter_handle](https://twitter.com/twitter_handle) - queryflow58@gmail.com
-
-Web Application - Query Performance Visualizer and Analyzer: [https://www.query-flow.com/](https://www.query-flow.com/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-
-## Team
-
-- []() Vivek Patel
-- []() Niko Amescua
-- []() Ryan Campbell
-- []() Philip Brown
-- []() George Greer
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
