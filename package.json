@@ -1,7 +1,7 @@
 {
   "name": "queryflow.js",
   "author": "Ryan Campbell, Philip Brown, Vivek Patel, George Greer, Niko Amescua",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Lightweight library for automatically caching slow SQL queries within the backend middleware.",
   "main": "QueryFlow.js",
   "scoped": false,

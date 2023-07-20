@@ -2,8 +2,9 @@
 
 <!-- PROJECT LOGO -->
 <br />
+<a id="readme-top"></a>
 <div align="center">
-  <a href="www.query-flow.com">
+  <a href="https://www.query-flow.com">
     <img src="./assets/QueryFlow-logo-white.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -52,14 +53,14 @@
 ## About The Project
 
 <div align="center">
-  <a href="www.query-flow.com">
+  <a href="https://www.query-flow.com">
     <img src="./assets/QueryFlowTagLogo.png" alt="Logo" width="" height="55">
   </a>
 </div>
 
 </br>
 
-Before the development of this NPM package to automatically cache query results from a relational database, a web application, _[www.query-flow.com](www.query-flow.com)_, was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
+Before the development of this NPM package to automatically cache query results from a relational database, a [web application](https://www.query-flow.com) was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
 
 [NPM Package](https://www.npmjs.com/)
 
@@ -71,7 +72,7 @@ Before the development of this NPM package to automatically cache query results 
 
 This package assumes that a Redis instance has been set up alongside a primary relational database.
 
-For more information about setting up a Redis database, visit: [https://redis.io/docs/getting-started/](https://redis.io/docs/getting-started/)
+For more information about setting up a Redis database, visit [their docs](https://redis.io/docs/getting-started/).
 
 ### Installation
 
@@ -97,7 +98,8 @@ import QueryFlow from "queryflow.js";
 const exampleController = {};
 
 exampleController.example = async (req, res, next) => {
-  const queryString = "SELECT * FROM users WHERE firstname = $1 AND lastname = $2";
+  const queryString =
+    "SELECT * FROM users WHERE firstname = $1 AND lastname = $2";
   const { firstName, lastName } = req.body;
   const values = [firstName, lastName];
   const threshold = 3000; //Milliseconds
@@ -110,9 +112,9 @@ exampleController.example = async (req, res, next) => {
       values,
       threshold, //OPTIONAL: Default value 3 seconds.
       TTL, //OPTIONAL: Default value 30 minutes.
-      log:true //OPTIONAL: Default value false. Turn console logs on and off.
-      instanceLatency:true //OPTIONAL: Default value false. Switches measurement of time from measuring total latency to measuring total time within the primary database itself. 
-  });
+      log: true, //OPTIONAL: Default value false. Turn console logs on and off.
+      instanceLatency: true, //OPTIONAL: Default value false. Switches measurement of time from measuring total latency to measuring total time within the primary database itself.
+    });
     res.locals.data = result.rows;
     return next();
   } catch (error) {
@@ -138,7 +140,6 @@ export default exampleController;
 - []() **log:** OPTIONAL. Turns console.logs on and off. Default value is false.
 - []() **instanceLatency:** OPTIONAL. Switches from measuring total latency to measuring latency within the instance itself. Default value is false.
 
-
 We recommend using the _volatile-ttl_ eviction policy with this package to take advantage of the data's TTL, in the even that maximum memory is reached.
 
 ### Example Use Cases
@@ -155,7 +156,7 @@ Machine learning models can often be quite large and take time to load from a pr
 
 Storing fetch requests' result sets in memory decreases the processing time for web applications that need to return data from complex queries. Furthermore, data that is frequently used need not be retrieved from a slow primary relational database, it can be kept in memory for quick retrieval as it is often requested by the client.
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/oslabs-beta/query-flow-npm/issues) for a full list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
@@ -204,4 +205,4 @@ The Team wholeheartedly thanks Chris Suzukida for his mentorship and support thr
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Back to Top</a>)</p>
