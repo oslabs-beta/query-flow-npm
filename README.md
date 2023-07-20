@@ -134,7 +134,9 @@ export default exampleController;
 - []() **values:** Array of values to be bound to SQL query string
 - []() **threshold:** OPTIONAL. Threshold in milliseconds (ms). Default value is 3 seconds.
 - []() **TTL:** OPTIONAL. Time to Live (TTL) in seconds (s). Default value is 30 mins.
-- []() **boolean:** OPTIONAL. Turns console.logs on and off. Default value is false.
+- []() **log:** OPTIONAL. Turns console.logs on and off. Default value is false.
+- []() **instanceLatency:** OPTIONAL. Switches from measuring total latency to measuring latency within the instance itself. Default value is false.
+
 
 We recommend using the _volatile-ttl_ eviction policy with this package to take advantage of the data's TTL, in the even that maximum memory is reached.
 
