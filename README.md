@@ -2,6 +2,7 @@
 
 <!-- PROJECT LOGO -->
 <br />
+<a id="readme-top"></a>
 <div align="center">
   <a href="www.query-flow.com">
     <img src="./assets/QueryFlow-logo-white.png" alt="Logo" width="80" height="80">
@@ -201,4 +202,4 @@ The Team wholeheartedly thanks Chris Suzukida for his mentorship and support thr
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">Back to Top</a>)</p>
