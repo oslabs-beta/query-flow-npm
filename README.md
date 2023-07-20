@@ -110,7 +110,8 @@ exampleController.example = async (req, res, next) => {
       values,
       threshold, //OPTIONAL: Default value 3 seconds.
       TTL, //OPTIONAL: Default value 30 minutes.
-      true //OPTIONAL: Default value false. Turn console logs on and off.
+      log:true //OPTIONAL: Default value false. Turn console logs on and off.
+      instanceLatency:true //OPTIONAL: Default value false. Switches measurement of time from measuring total latency to measuring total time within the primary database itself. 
   });
     res.locals.data = result.rows;
     return next();

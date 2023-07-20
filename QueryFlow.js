@@ -65,7 +65,7 @@ QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3
       if (totalTimeInstance > threshold) {
         const addToCache = async () => {
           try {
-            if (log)console.log(`Set Redis with key ${hash} and data`);
+            if (log) console.log(`Set Redis with key ${hash} and data`);
             await redisModel.json.set(hash, '.', resultSQL);
             await redisModel.expire(hash, TTL);
           } catch (err) {
