@@ -2,7 +2,7 @@ import CryptoJS from "crypto-js";
 
 const QueryFlow = {};
 
-QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3000, TTL = 1800, log = false}) => {
+QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3000, TTL = 1800, log = false, instanceLatency = false}) => {
   
   //Check querystring is 'Read' Type. If not, throw new error. 
   const stringCheck = async () => {
@@ -31,19 +31,19 @@ QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3
   const getResultRedis = await redisModel.json.get(hash, {
     path: '.',
   });
-    
+  
   //CACHE HIT
   if (getResultRedis){
     if (log) console.log(`Returned data associated with key ${hash} from Redis`)
     return getResultRedis;
 
   //CACHE MISS
-  } else {
+  } else if (!instanceLatency) {
     const startTime = process.hrtime();
     const resultSQL = await db(string);
     const endTime = process.hrtime(startTime);
-    const totalTimeSQL = (endTime[0] * 1000 + endTime[1] / 1000000).toFixed(2);
-    if (totalTimeSQL > threshold) {
+    const totalTimeHrTime = (endTime[0] * 1000 + endTime[1] / 1000000).toFixed(2);
+    if (totalTimeHrTime > threshold) {
       const addToCache = async () => {
         try {
           if (log)console.log(`Set Redis with key ${hash} and data`);
@@ -56,6 +56,25 @@ QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3
       addToCache();
     }
     return resultSQL;
+  } else {
+      const appendedString = 'EXPLAIN (ANALYZE true, COSTS true, SETTINGS true, BUFFERS true, WAL true, SUMMARY true, FORMAT JSON)' + `${queryString}`;
+      const query = {text: appendedString, values: values};
+      const data = await db(query)
+      const totalTimeInstance = (1000 * (Number(((data.rows[0]['QUERY PLAN'][0]['Planning Time']) + (data.rows[0]['QUERY PLAN'][0]['Execution Time'])))))
+      const resultSQL = await db(string);
+      if (totalTimeInstance > threshold) {
+        const addToCache = async () => {
+          try {
+            if (log)console.log(`Set Redis with key ${hash} and data`);
+            await redisModel.json.set(hash, '.', resultSQL);
+            await redisModel.expire(hash, TTL);
+          } catch (err) {
+            console.error('Error setting JSON data in Redis Database:', err);
+          }
+        }
+        addToCache();
+      }
+      return resultSQL;
   }
 };
 
