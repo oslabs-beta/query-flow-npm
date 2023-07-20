@@ -11,7 +11,7 @@
 <h3 align="center">queryflow.js</h3>
 
   <p align="center">
-    Lightweight middleware function that automatically caches results of slow SQL queries.
+    Lightweight middleware function that automatically caches SQL query results for increased performance.
     <br />
     <br />
     <!--Do we need explore the docs? The README is basically the documentation.-->
@@ -62,7 +62,7 @@
 
 Before the development of this NPM package to automatically cache query results from a relational database, a [web application](https://www.query-flow.com) was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
 
-[NPM Package](https://www.npmjs.com/)
+[NPM Package](https://www.npmjs.com/package/queryflow.js)
 
 <!-- GETTING STARTED -->
 
