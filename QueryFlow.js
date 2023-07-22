@@ -60,7 +60,7 @@ QueryFlow.autoCache = async ({redisModel, db, queryString, values, threshold = 3
       const appendedString = 'EXPLAIN (ANALYZE true, COSTS true, SETTINGS true, BUFFERS true, WAL true, SUMMARY true, FORMAT JSON)' + `${queryString}`;
       const query = {text: appendedString, values: values};
       const data = await db(query)
-      const totalTimeInstance = (1000 * (Number(((data.rows[0]['QUERY PLAN'][0]['Planning Time']) + (data.rows[0]['QUERY PLAN'][0]['Execution Time'])))))
+      const totalTimeInstance = (Number(((data.rows[0]['QUERY PLAN'][0]['Planning Time']) + (data.rows[0]['QUERY PLAN'][0]['Execution Time']))));
       const resultSQL = await db(string);
       if (totalTimeInstance > threshold) {
         const addToCache = async () => {
