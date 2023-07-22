@@ -2,15 +2,16 @@
 
 <!-- PROJECT LOGO -->
 <br />
+<a id="readme-top"></a>
 <div align="center">
-  <a href="www.query-flow.com">
+  <a href="https://www.query-flow.com">
     <img src="./assets/QueryFlow-logo-white.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">queryflow.js</h3>
 
   <p align="center">
-    Lightweight middleware function that automatically caches results of slow SQL queries.
+    Lightweight middleware function that automatically caches SQL query results for increased performance.
     <br />
     <br />
     <!--Do we need explore the docs? The README is basically the documentation.-->
@@ -52,16 +53,16 @@
 ## About The Project
 
 <div align="center">
-  <a href="www.query-flow.com">
+  <a href="https://www.query-flow.com">
     <img src="./assets/QueryFlowTagLogo.png" alt="Logo" width="" height="55">
   </a>
 </div>
 
 </br>
 
-Before the development of this NPM package to automatically cache query results from a relational database, a web application, _[www.query-flow.com](www.query-flow.com)_, was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
+Before the development of this NPM package to automatically cache query results from a relational database, a [web application](https://www.query-flow.com) was made for developers to analyze and visualize the performance of SQL queries. With these insights into the performance of an application's backend queries, developers can implement data-backed thresholds with the queryflow.js NPM package, such that queries slower than the set threshold will be stored in a cache database. This **increases performance** of applications by **reducing each query's time** by up to _**94%**_.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+[NPM Package](https://www.npmjs.com/package/queryflow.js)
 
 <!-- GETTING STARTED -->
 
@@ -71,7 +72,7 @@ Before the development of this NPM package to automatically cache query results 
 
 This package assumes that a Redis instance has been set up alongside a primary relational database.
 
-For more information about setting up a Redis database, visit: [https://redis.io/docs/getting-started/](https://redis.io/docs/getting-started/)
+For more information about setting up a Redis database, visit [their docs](https://redis.io/docs/getting-started/).
 
 ### Installation
 
@@ -97,21 +98,23 @@ import QueryFlow from "queryflow.js";
 const exampleController = {};
 
 exampleController.example = async (req, res, next) => {
-  const querystring =
+  const queryString =
     "SELECT * FROM users WHERE firstname = $1 AND lastname = $2";
-  const { firstname, lastname } = req.body;
-  const values = [firstname, lastname];
+  const { firstName, lastName } = req.body;
+  const values = [firstName, lastName];
   const threshold = 3000; //Milliseconds
   const TTL = 30; //Seconds
   try {
-    const result = await QueryFlow.autoCache(
+    const result = await QueryFlow.autoCache({
       redisModel,
       db,
-      querystring,
+      queryString,
       values,
-      threshold,
-      TTL
-    );
+      threshold, //OPTIONAL: Default value 3 seconds.
+      TTL, //OPTIONAL: Default value 30 minutes.
+      log: true, //OPTIONAL: Default value false. Turn console logs on and off.
+      instanceLatency: true, //OPTIONAL: Default value false. Switches measurement of time from measuring total latency to measuring total time within the primary database itself.
+    });
     res.locals.data = result.rows;
     return next();
   } catch (error) {
@@ -128,12 +131,14 @@ export default exampleController;
 
 ## Parameters
 
-- []() **redisModel:** Redis client to be set as 'redisModel' or imported as 'redisModel'.
-- []() **db:** Database client to be set as 'db' or imported as 'db'.
-- []() **querystring:** SQL query string.
-- []() **values:** Array of values to bound to SQL query string
-- []() **threshold:** Threshold in milliseconds (ms)
-- []() **TTL:** Time to Live (TTL) in seconds (s)
+- []() **redisModel:** Redis client.
+- []() **db:** Primary relational database.
+- []() **queryString:** SQL query string.
+- []() **values:** Array of values to be bound to SQL query string
+- []() **threshold:** OPTIONAL. Threshold in milliseconds (ms). Default value is 3 seconds.
+- []() **TTL:** OPTIONAL. Time to Live (TTL) in seconds (s). Default value is 30 mins.
+- []() **log:** OPTIONAL. Turns console.logs on and off. Default value is false.
+- []() **instanceLatency:** OPTIONAL. Switches from measuring total latency to measuring latency within the instance itself. Default value is false.
 
 We recommend using the _volatile-ttl_ eviction policy with this package to take advantage of the data's TTL, in the even that maximum memory is reached.
 
@@ -151,9 +156,7 @@ Machine learning models can often be quite large and take time to load from a pr
 
 Storing fetch requests' result sets in memory decreases the processing time for web applications that need to return data from complex queries. Furthermore, data that is frequently used need not be retrieved from a slow primary relational database, it can be kept in memory for quick retrieval as it is often requested by the client.
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+See the [open issues](https://github.com/oslabs-beta/query-flow-npm/issues) for a full list of proposed features (and known issues).
 
 <!-- CONTRIBUTING -->
 
@@ -170,17 +173,17 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTACT -->
 
 ## Contact
 
-QueryFlow - [@Query_Flow](https://twitter.com/Query_Flow) - queryflow58@gmail.com
+Email - queryflow58@gmail.com
 
-Query Performance Visualizer and Analyzer: [https://www.query-flow.com/](https://www.query-flow.com/)
+Twitter - [@Query_Flow](https://twitter.com/Query_Flow)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+LinkedIn - [Team Page](https://www.linkedin.com/company/query-flow/about/)
+
+QueryFlow Performance Visualizer and Analyzer: [https://www.query-flow.com/](https://www.query-flow.com/)
 
 ## Team
 
@@ -192,8 +195,6 @@ Query Performance Visualizer and Analyzer: [https://www.query-flow.com/](https:/
 - []() **Philip Brown** - [GitHub](https://github.com/starfishpanda) - [LinkedIn](https://www.linkedin.com/in/philiplbrown/)
 - []() **George Greer** - [GitHub](https://github.com/ggreer91) - [LinkedIn](https://www.linkedin.com/in/george-greer/)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ## Acknowledgements
 
 The Team wholeheartedly thanks Chris Suzukida for his mentorship and support throughout the development of this project.
@@ -204,37 +205,4 @@ The Team wholeheartedly thanks Chris Suzukida for his mentorship and support thr
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com
+<p align="right">(<a href="#readme-top">Back to Top</a>)</p>
